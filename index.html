@@ -1,95 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Notion Date Widget</title>
-    <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-main: #37352f;
-            --text-muted: rgba(55, 53, 47, 0.65);
-            --border-color: rgba(55, 53, 47, 0.09);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #191919;
-                --text-main: rgba(255, 255, 255, 0.9);
-                --text-muted: rgba(255, 255, 255, 0.44);
-                --border-color: rgba(255, 255, 255, 0.09);
-            }
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            color: var(--text-main);
-            overflow: hidden;
-        }
-
-        .widget-container {
-            padding: 12px;
-            display: inline-block; /* Only takes up as much space as needed */
-        }
-
-        .date-text {
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 1.2;
-            margin-bottom: 2px;
-        }
-
-        .week-text {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Small divider dot for a cleaner look */
-        .week-text::before {
-            content: "";
-            width: 4px;
-            height: 4px;
-            background-color: var(--border-color);
-            border-radius: 50%;
-        }
-    </style>
+<meta charset="utf-8">
+<title>JEE Countdown</title>
+<style>
+  html, body {
+    margin: 0;
+    background: rgb(25, 25, 25);
+    color: #fff;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  html, body { height: 100%; }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #widget {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 56px;
+    padding: 16px;
+    text-align: center;
+  }
+  .label {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-bottom: 4px;
+  }
+  .time {
+    font-size: 24px;
+    white-space: pre;
+  }
+</style>
 </head>
 <body>
+<div id="widget"></div>
 
-    <div class="widget-container">
-        <div id="date" class="date-text">...</div>
-        <div id="week" class="week-text">Week --</div>
-    </div>
+<script>
+  // Times are pinned to IST (+05:30) so the countdown is right on any device.
+  const EVENTS = [
+    { name: "JEE Mains 1",   date: "2027-01-22T00:00:00+05:30", tentative: false },
+    { name: "JEE Mains 2",   date: "2027-04-04T00:00:00+05:30", tentative: true  },
+    { name: "JEE Advanced",  date: "2027-05-17T00:00:00+05:30", tentative: true  },
+  ];
 
-    <script>
-        function updateDate() {
-            const now = new Date();
-            
-            const dateOptions = { weekday: 'long', month: 'short', day: 'numeric' };
-            document.getElementById('date').innerText = now.toLocaleDateString('en-US', dateOptions);
+  const widget = document.getElementById("widget");
 
-            // ISO Week Calculation
-            const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
-            const dayNum = d.getUTCDay() || 7;
-            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-            const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-            
-            document.getElementById('week').innerText = `Week ${weekNo}`;
-        }
+  // Build the DOM once; only the numbers change each tick.
+  const timeEls = EVENTS.map(ev => {
+    const block = document.createElement("div");
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = ev.name + (ev.tentative ? " (tentative)" : "");
+    const time = document.createElement("div");
+    time.className = "time";
+    block.append(label, time);
+    widget.append(block);
+    return time;
+  });
 
-        updateDate();
-        setInterval(updateDate, 60000);
-    </script>
+  function format(ms) {
+    if (ms <= 0) return "Started";
+    const s = Math.floor(ms / 1000);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    const pad = n => String(n).padStart(2, "0");
+    return `${d}d ${pad(h)}h ${pad(m)}m ${pad(sec)}s`;
+  }
+
+  function tick() {
+    const now = Date.now();
+    EVENTS.forEach((ev, i) => {
+      timeEls[i].textContent = format(new Date(ev.date) - now);
+    });
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
 </body>
 </html>
