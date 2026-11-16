@@ -88,26 +88,26 @@
 </div>
 
 <script>
-  // gen/obc: [closing rank 2025, closing rank 2026 or null], marks needed
+  // gen/obc: [JoSAA last-round closing rank 2025, 2026], marks needed (official 2025 marks-vs-rank tables)
   const data = [
-    { n: 'IIT Bombay',    gen: { r: [66, 67],     m: 278 }, obc: { r: [54, null],  m: 255 }, adv: '99.96',        main: '99.995' },
-    { n: 'IIT Delhi',     gen: { r: [125, 128],   m: 265 }, obc: { r: [91, null],  m: 245 }, adv: '99.93',        main: '99.991' },
-    { n: 'IIT Madras',    gen: { r: [171, 151],   m: 258 }, obc: { r: [97, null],  m: 243 }, adv: '99.91–99.92',  main: '99.988' },
-    { n: 'IIT Kanpur',    gen: { r: [270, 283],   m: 250 }, obc: { r: [160, null], m: 235 }, adv: '99.84–99.85',  main: '99.98' },
-    { n: 'IIT Kharagpur', gen: { r: [450, 509],   m: 238 }, obc: { r: [209, null], m: 228 }, adv: '99.72–99.75',  main: '99.96–99.97' },
-    { n: 'IIT Roorkee',   gen: { r: [535, null],  m: 233 }, obc: { r: [244, null], m: 225 }, adv: '99.70',        main: '99.96' },
-    { n: 'IIT Guwahati',  gen: { r: [650, null],  m: 228 }, obc: { r: [350, null], m: 218 }, adv: '99.56–99.64',  main: '99.95' },
+    { n: 'IIT Bombay',    gen: { r: [66, 67],     m: 283, main: '99.996', adv: '99.96' }, obc: { r: [54, 62],   m: 234, main: '~99.969', adv: '~99.72' } },
+    { n: 'IIT Delhi',     gen: { r: [126, 128],   m: 272, main: '99.992', adv: '99.93' }, obc: { r: [91, 108],  m: 223, main: '~99.958', adv: '~99.62' } },
+    { n: 'IIT Madras',    gen: { r: [171, 151],   m: 269, main: '99.991', adv: '99.92' }, obc: { r: [87, 96],   m: 226, main: '~99.961', adv: '~99.66' } },
+    { n: 'IIT Kanpur',    gen: { r: [271, 283],   m: 252, main: '99.982', adv: '99.84' }, obc: { r: [142, 158], m: 210, main: '~99.940', adv: '~99.47' } },
+    { n: 'IIT Kharagpur', gen: { r: [466, 509],   m: 233, main: '99.968', adv: '99.72' }, obc: { r: [212, 258], m: 193, main: '~99.909', adv: '~99.19' } },
+    { n: 'IIT Roorkee',   gen: { r: [592, 587],   m: 228, main: '99.963', adv: '99.67' }, obc: { r: [253, 312], m: 187, main: '~99.892', adv: '~99.04' } },
+    { n: 'IIT Guwahati',  gen: { r: [792, 822],   m: 215, main: '99.949', adv: '99.54' }, obc: { r: [336, 392], m: 178, main: '~99.866', adv: '~98.81' } },
   ];
   // Backups: IIIT-H has no reservation, so it is the same in both views
   const iiith = { rank: '866–1004', pct: '99.93–99.94', marks: '~240–250' };
   const backups = [
     { n: 'IIIT Hyderabad CSE', gen: iiith, obc: iiith },
     { n: 'NIT Calicut CSE',
-      gen: { rank: '8428–8814', pct: '~99.4', marks: '~170–186' },
-      obc: { rank: '~3220',     pct: '~99.3', marks: '~165–180' } },
+      gen: { rank: '8428–8814', pct: '99.45–99.47', marks: '~173–190' },
+      obc: { rank: '4321',      pct: '~98.95',      marks: '~153–169' } },
   ];
   const backupsEl = document.getElementById('backups');
-  const lo = 215, hi = 280;                    // marks range driving colour (white -> hot)
+  const lo = 175, hi = 285;                    // marks range driving colour (white -> hot)
   const mix = (a, b, u) => Math.round(a + (b - a) * u);
   const rows = document.getElementById('rows');
   const head = document.getElementById('head');
@@ -120,15 +120,13 @@
   function render(cat) {
     head.innerHTML = `
       <div>Institute</div><div>2025</div><div>2026</div>
-      <div>${cat === 'gen' ? 'Main-scale %ile' : ''}</div>
-      <div>${cat === 'gen' ? 'Adv-pool %ile' : ''}</div>
+      <div>Main-scale %ile</div>
+      <div>Adv-pool %ile</div>
       <div>Marks</div>`;
     // keep column order: rank25, rank26, main, adv, marks
     rows.innerHTML = data.map(d => {
       const c = d[cat], col = colour(c.m);
-      const pct = cat === 'gen'
-        ? `<div class="pct mono"><b>${d.main}</b></div><div class="pct mono">${d.adv}</div>`
-        : `<div></div><div></div>`;
+      const pct = `<div class="pct mono"><b>${c.main}</b></div><div class="pct mono">${c.adv}</div>`;
       return `
       <div class="r" style="--c:${col}; --w:${(c.m / 360).toFixed(4)}">
         <div class="inst">${d.n}</div>
