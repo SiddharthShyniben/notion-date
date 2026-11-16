@@ -12,7 +12,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); }
   body {
-    min-height: 100vh; padding: 40px 24px;
+    padding: 16px 20px;
     display: flex; justify-content: center;
     color: #fff; font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -59,7 +59,7 @@
 
 
   @media (max-width: 680px) {
-    body { padding: 28px 16px; }
+    body { padding: 16px; }
     .head, .r { grid-template-columns: minmax(84px, 1.4fr) 44px 46px 78px 66px; column-gap: 8px; }
     .inst { font-size: 13px; }
     .marks { font-size: 18px; }
@@ -84,23 +84,7 @@
   <div class="head" id="head"></div>
   <div id="rows"></div>
 
-  <div class="iiit">
-    <div class="inst">IIIT Hyderabad CSE</div>
-    <div class="stats mono">
-      <div class="stat"><div class="v">866–1004</div><div class="k">rank</div></div>
-      <div class="stat"><div class="v">99.93–99.94</div><div class="k">percentile</div></div>
-      <div class="stat"><div class="v hot">~240–250</div><div class="k">marks</div></div>
-    </div>
-  </div>
-
-  <div class="iiit">
-    <div class="inst">NIT Calicut CSE</div>
-    <div class="stats mono">
-      <div class="stat"><div class="v">8428–8814</div><div class="k">rank</div></div>
-      <div class="stat"><div class="v">~99.4</div><div class="k">percentile</div></div>
-      <div class="stat"><div class="v hot">~170–186</div><div class="k">marks</div></div>
-    </div>
-  </div>
+  <div id="backups"></div>
 </div>
 
 <script>
@@ -114,7 +98,16 @@
     { n: 'IIT Roorkee',   gen: { r: [535, null],  m: 233 }, obc: { r: [244, null], m: 225 }, adv: '99.70',        main: '99.96' },
     { n: 'IIT Guwahati',  gen: { r: [650, null],  m: 228 }, obc: { r: [350, null], m: 218 }, adv: '99.56–99.64',  main: '99.95' },
   ];
-  const lo = 215, hi = 280;                     // marks range driving colour (white -> hot)
+  // Backups: IIIT-H has no reservation, so it is the same in both views
+  const iiith = { rank: '866–1004', pct: '99.93–99.94', marks: '~240–250' };
+  const backups = [
+    { n: 'IIIT Hyderabad CSE', gen: iiith, obc: iiith },
+    { n: 'NIT Calicut CSE',
+      gen: { rank: '8428–8814', pct: '~99.4', marks: '~170–186' },
+      obc: { rank: '~3220',     pct: '~99.3', marks: '~165–180' } },
+  ];
+  const backupsEl = document.getElementById('backups');
+  const lo = 215, hi = 280;                    // marks range driving colour (white -> hot)
   const mix = (a, b, u) => Math.round(a + (b - a) * u);
   const rows = document.getElementById('rows');
   const head = document.getElementById('head');
@@ -144,6 +137,18 @@
         ${pct}
         <div class="marks mono">${c.m}<small>+</small></div>
         <div class="bar"><i></i></div>
+      </div>`;
+    }).join('');
+    backupsEl.innerHTML = backups.map(b => {
+      const c = b[cat];
+      return `
+      <div class="iiit">
+        <div class="inst">${b.n}</div>
+        <div class="stats mono">
+          <div class="stat"><div class="v">${c.rank}</div><div class="k">rank</div></div>
+          <div class="stat"><div class="v">${c.pct}</div><div class="k">percentile</div></div>
+          <div class="stat"><div class="v hot">${c.marks}</div><div class="k">marks</div></div>
+        </div>
       </div>`;
     }).join('');
   }
