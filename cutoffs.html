@@ -33,7 +33,7 @@
 
   .head, .r {
     display: grid; align-items: center; column-gap: 16px;
-    grid-template-columns: minmax(120px, 1.5fr) 74px 74px 110px 110px 84px;
+    grid-template-columns: minmax(120px, 1.5fr) 74px 74px 120px 84px;
   }
   .head { padding: 0 0 10px; font-size: 11px; font-weight: 500; letter-spacing: .02em; color: var(--dim); border-bottom: 1px solid var(--line); }
   .head > :not(:first-child), .r > :not(:first-child) { text-align: right; }
@@ -63,7 +63,6 @@
     .head, .r { grid-template-columns: minmax(84px, 1.4fr) 44px 46px 78px 66px; column-gap: 8px; }
     .inst { font-size: 13px; }
     .marks { font-size: 18px; }
-    .head > :nth-child(5), .r > :nth-child(5) { display: none; }
     .iiit { grid-template-columns: 1fr; }
     .stats, .stat { justify-content: flex-start; text-align: left; }
   }
@@ -90,13 +89,13 @@
 <script>
   // gen/obc: [JoSAA last-round closing rank 2025, 2026], marks needed (official 2025 marks-vs-rank tables)
   const data = [
-    { n: 'IIT Bombay',    gen: { r: [66, 67],     m: 283, main: '99.996', adv: '99.96' }, obc: { r: [54, 62],   m: 234, main: '~99.969', adv: '~99.72' } },
-    { n: 'IIT Delhi',     gen: { r: [126, 128],   m: 272, main: '99.992', adv: '99.93' }, obc: { r: [91, 108],  m: 223, main: '~99.958', adv: '~99.62' } },
-    { n: 'IIT Madras',    gen: { r: [171, 151],   m: 269, main: '99.991', adv: '99.92' }, obc: { r: [87, 96],   m: 226, main: '~99.961', adv: '~99.66' } },
-    { n: 'IIT Kanpur',    gen: { r: [271, 283],   m: 252, main: '99.982', adv: '99.84' }, obc: { r: [142, 158], m: 210, main: '~99.940', adv: '~99.47' } },
-    { n: 'IIT Kharagpur', gen: { r: [466, 509],   m: 233, main: '99.968', adv: '99.72' }, obc: { r: [212, 258], m: 193, main: '~99.909', adv: '~99.19' } },
-    { n: 'IIT Roorkee',   gen: { r: [592, 587],   m: 228, main: '99.963', adv: '99.67' }, obc: { r: [253, 312], m: 187, main: '~99.892', adv: '~99.04' } },
-    { n: 'IIT Guwahati',  gen: { r: [792, 822],   m: 215, main: '99.949', adv: '99.54' }, obc: { r: [336, 392], m: 178, main: '~99.866', adv: '~98.81' } },
+    { n: 'IIT Bombay',    gen: { r: [66, 67],     m: 283, adv: '99.96' }, obc: { r: [54, 62],   m: 234, adv: '~99.72' } },
+    { n: 'IIT Delhi',     gen: { r: [126, 128],   m: 272, adv: '99.93' }, obc: { r: [91, 108],  m: 223, adv: '~99.62' } },
+    { n: 'IIT Madras',    gen: { r: [171, 151],   m: 269, adv: '99.92' }, obc: { r: [87, 96],   m: 226, adv: '~99.66' } },
+    { n: 'IIT Kanpur',    gen: { r: [271, 283],   m: 252, adv: '99.84' }, obc: { r: [142, 158], m: 210, adv: '~99.47' } },
+    { n: 'IIT Kharagpur', gen: { r: [466, 509],   m: 233, adv: '99.72' }, obc: { r: [212, 258], m: 193, adv: '~99.19' } },
+    { n: 'IIT Roorkee',   gen: { r: [592, 587],   m: 228, adv: '99.67' }, obc: { r: [253, 312], m: 187, adv: '~99.04' } },
+    { n: 'IIT Guwahati',  gen: { r: [792, 822],   m: 215, adv: '99.54' }, obc: { r: [336, 392], m: 178, adv: '~98.81' } },
   ];
   // Backups: IIIT-H has no reservation, so it is the same in both views
   const iiith = { rank: '866–1004', pct: '99.93–99.94', marks: '~240–250' };
@@ -120,13 +119,11 @@
   function render(cat) {
     head.innerHTML = `
       <div>Institute</div><div>2025</div><div>2026</div>
-      <div>Main-scale %ile</div>
-      <div>Adv-pool %ile</div>
+      <div>Percentile</div>
       <div>Marks</div>`;
-    // keep column order: rank25, rank26, main, adv, marks
     rows.innerHTML = data.map(d => {
       const c = d[cat], col = colour(c.m);
-      const pct = `<div class="pct mono"><b>${c.main}</b></div><div class="pct mono">${c.adv}</div>`;
+      const pct = `<div class="pct mono"><b>${c.adv}</b></div>`;
       return `
       <div class="r" style="--c:${col}; --w:${(c.m / 360).toFixed(4)}">
         <div class="inst">${d.n}</div>
