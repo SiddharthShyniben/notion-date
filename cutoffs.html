@@ -22,7 +22,6 @@
 
   header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
   h1 { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.85); }
-  .sub { margin-top: 4px; font-size: 12px; color: var(--dim); }
 
   .toggle { display: inline-flex; padding: 2px; border: 1px solid var(--line); border-radius: 8px; }
   .toggle button {
@@ -51,15 +50,12 @@
   .pct b { font-weight: 500; color: #fff; }
 
   .iiit { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: baseline; }
-  .iiit .inst small { display: block; margin-top: 3px; font-size: 11px; font-weight: 400; color: var(--dim); }
   .stats { display: flex; gap: clamp(18px, 3.5vw, 40px); justify-content: flex-end; flex-wrap: wrap; }
   .stat { text-align: right; }
   .stat .v { font-size: 20px; font-weight: 700; letter-spacing: -.03em; }
   .stat .v.hot { color: rgb(var(--hot)); }
   .stat .k { margin-top: 3px; font-size: 11px; color: var(--dim); }
 
-  footer { margin-top: 26px; font-size: 11px; line-height: 1.6; color: var(--dim); }
-  footer span { display: block; }
 
   @media (max-width: 680px) {
     body { padding: 28px 16px; }
@@ -77,7 +73,6 @@
   <header>
     <div>
       <h1>CSE closing ranks</h1>
-      <div class="sub">Top 7 IITs · last-round JoSAA · marks out of 360</div>
     </div>
     <div class="toggle" role="group" aria-label="Category">
       <button type="button" data-cat="gen" aria-pressed="true">General</button>
@@ -89,44 +84,22 @@
   <div id="rows"></div>
 
   <div class="iiit">
-    <div class="inst">IIIT Hyderabad CSE
-      <small>JEE Main CRL · own process, not JoSAA · no reservation</small>
-    </div>
+    <div class="inst">IIIT Hyderabad CSE</div>
     <div class="stats mono">
-      <div class="stat"><div class="v">866–1004</div><div class="k">Round 1 · edge ~3100</div></div>
-      <div class="stat"><div class="v">99.93–99.94</div><div class="k">safe %ile · edge ~99.78</div></div>
-      <div class="stat"><div class="v hot">~240–250</div><div class="k">Main marks · edge ~205–220</div></div>
+      <div class="stat"><div class="v">866–1004</div><div class="k">rank</div></div>
+      <div class="stat"><div class="v">99.93–99.94</div><div class="k">percentile</div></div>
+      <div class="stat"><div class="v hot">~240–250</div><div class="k">marks</div></div>
     </div>
   </div>
 
   <div class="iiit">
-    <div class="inst">NIT Calicut CSE · Kerala
-      <small>JEE Main CRL · JoSAA home-state quota · General</small>
-    </div>
+    <div class="inst">NIT Calicut CSE</div>
     <div class="stats mono">
-      <div class="stat"><div class="v">8428–8814</div><div class="k">2025 · 2026 rank</div></div>
+      <div class="stat"><div class="v">8428–8814</div><div class="k">rank</div></div>
       <div class="stat"><div class="v">~99.4</div><div class="k">percentile</div></div>
-      <div class="stat"><div class="v hot">~170–186</div><div class="k">Main marks</div></div>
+      <div class="stat"><div class="v hot">~170–186</div><div class="k">marks</div></div>
     </div>
   </div>
-
-  <div class="iiit">
-    <div class="inst">NIT Calicut CSE · Other State
-      <small>JEE Main CRL · JoSAA 2025 last round · General</small>
-    </div>
-    <div class="stats mono">
-      <div class="stat"><div class="v">5222</div><div class="k">2025 rank</div></div>
-      <div class="stat"><div class="v">~99.63</div><div class="k">percentile</div></div>
-      <div class="stat"><div class="v hot">~185–203</div><div class="k">Main marks</div></div>
-    </div>
-  </div>
-
-  <footer>
-    <span>Ranks: General (CRL) last-round closing for 2025 and 2026 where known; OBC-NCL is 2025. Aggregator figures, sources disagree in places. Confirm on josaa.nic.in.</span>
-    <span>Marks anchor to the hard 2025 paper; an easier paper raises them. Percentiles are rough: Advanced pool ≈ 1.8 lakh, Main scale ≈ 14.15 lakh.</span>
-    <span>Main marks come from Careers360's reconstructed January 2026 shift tables (student-reported, not NTA). Data stops at 99.9 (219–234), so IIIT-H marks are extrapolated. Shift spread is ~15–30 marks.</span>
-    <span>Percentile columns are General only. OBC-NCL ranks run roughly 40–50% lower.</span>
-  </footer>
 </div>
 
 <script>
