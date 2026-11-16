@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE Cutoffs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: rgb(25, 25, 25); --dim: rgba(255,255,255,.42); --line: rgba(255,255,255,.1); --hot: 255, 82, 56; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    min-height: 100vh; padding: 40px 24px;
+    display: flex; justify-content: center;
+    color: #fff; font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card { width: 100%; max-width: 860px; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+  h1 { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.85); }
+  .sub { margin-top: 4px; font-size: 12px; color: var(--dim); }
+
+  .toggle { display: inline-flex; padding: 2px; border: 1px solid var(--line); border-radius: 8px; }
+  .toggle button {
+    appearance: none; border: 0; background: none; color: var(--dim); cursor: pointer;
+    font: 500 12px "Inter", sans-serif; padding: 5px 12px; border-radius: 6px; transition: color .15s, background .15s;
+  }
+  .toggle button:hover { color: #fff; }
+  .toggle button[aria-pressed="true"] { color: #fff; background: rgba(255,255,255,.1); }
+
+  .head, .r {
+    display: grid; align-items: center; column-gap: 16px;
+    grid-template-columns: minmax(120px, 1.5fr) 74px 74px 110px 110px 84px;
+  }
+  .head { padding: 0 0 10px; font-size: 11px; font-weight: 500; letter-spacing: .02em; color: var(--dim); border-bottom: 1px solid var(--line); }
+  .head > :not(:first-child), .r > :not(:first-child) { text-align: right; }
+
+  .r { padding: 14px 0 15px; position: relative; }
+  .inst { font-size: 14px; font-weight: 600; color: rgba(255,255,255,.9); }
+  .bar { grid-column: 1 / -1; height: 1px; margin-top: 11px; background: rgba(255,255,255,.1); }
+  .bar i { display: block; height: 100%; background: var(--c, #fff); transform-origin: left; transform: scaleX(var(--w, 0)); transition: transform .5s cubic-bezier(.2,.7,.2,1), background .3s; }
+  .num { font-size: 14px; color: rgba(255,255,255,.8); }
+  .num.faint { color: var(--dim); }
+  .marks { font-size: 20px; font-weight: 700; letter-spacing: -.03em; color: var(--c, #fff); transition: color .3s; }
+  .marks small { font-size: 11px; font-weight: 500; letter-spacing: 0; color: var(--dim); margin-left: 1px; }
+  .pct { font-size: 13px; color: rgba(255,255,255,.8); }
+  .pct b { font-weight: 500; color: #fff; }
+
+  .iiit { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: baseline; }
+  .iiit .inst small { display: block; margin-top: 3px; font-size: 11px; font-weight: 400; color: var(--dim); }
+  .stats { display: flex; gap: clamp(18px, 3.5vw, 40px); justify-content: flex-end; flex-wrap: wrap; }
+  .stat { text-align: right; }
+  .stat .v { font-size: 20px; font-weight: 700; letter-spacing: -.03em; }
+  .stat .v.hot { color: rgb(var(--hot)); }
+  .stat .k { margin-top: 3px; font-size: 11px; color: var(--dim); }
+
+  footer { margin-top: 26px; font-size: 11px; line-height: 1.6; color: var(--dim); }
+  footer span { display: block; }
+
+  @media (max-width: 680px) {
+    body { padding: 28px 16px; }
+    .head, .r { grid-template-columns: minmax(84px, 1.4fr) 44px 46px 78px 66px; column-gap: 8px; }
+    .inst { font-size: 13px; }
+    .marks { font-size: 18px; }
+    .head > :nth-child(5), .r > :nth-child(5) { display: none; }
+    .iiit { grid-template-columns: 1fr; }
+    .stats, .stat { justify-content: flex-start; text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <header>
+    <div>
+      <h1>CSE closing ranks</h1>
+      <div class="sub">Top 7 IITs · last-round JoSAA · marks out of 360</div>
+    </div>
+    <div class="toggle" role="group" aria-label="Category">
+      <button type="button" data-cat="gen" aria-pressed="true">General</button>
+      <button type="button" data-cat="obc" aria-pressed="false">OBC-NCL</button>
+    </div>
+  </header>
+
+  <div class="head" id="head"></div>
+  <div id="rows"></div>
+
+  <div class="iiit">
+    <div class="inst">IIIT Hyderabad CSE
+      <small>JEE Main CRL · own process, not JoSAA · no reservation</small>
+    </div>
+    <div class="stats mono">
+      <div class="stat"><div class="v">866–1004</div><div class="k">Round 1 rank</div></div>
+      <div class="stat"><div class="v hot">99.93–99.94</div><div class="k">safe percentile</div></div>
+      <div class="stat"><div class="v">~3100</div><div class="k">edge · ~99.78</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Ranks: General (CRL) last-round closing for 2025 and 2026 where known; OBC-NCL is 2025. Aggregator figures, sources disagree in places. Confirm on josaa.nic.in.</span>
+    <span>Marks anchor to the hard 2025 paper; an easier paper raises them. Percentiles are rough: Advanced pool ≈ 1.8 lakh, Main scale ≈ 14.15 lakh.</span>
+    <span>Percentile columns are General only. OBC-NCL ranks run roughly 40–50% lower.</span>
+  </footer>
+</div>
+
+<script>
+  // gen/obc: [closing rank 2025, closing rank 2026 or null], marks needed
+  const data = [
+    { n: 'IIT Bombay',    gen: { r: [66, 67],     m: 278 }, obc: { r: [54, null],  m: 255 }, adv: '99.96',        main: '99.995' },
+    { n: 'IIT Delhi',     gen: { r: [125, 128],   m: 265 }, obc: { r: [91, null],  m: 245 }, adv: '99.93',        main: '99.991' },
+    { n: 'IIT Madras',    gen: { r: [171, 151],   m: 258 }, obc: { r: [97, null],  m: 243 }, adv: '99.91–99.92',  main: '99.988' },
+    { n: 'IIT Kanpur',    gen: { r: [270, 283],   m: 250 }, obc: { r: [160, null], m: 235 }, adv: '99.84–99.85',  main: '99.98' },
+    { n: 'IIT Kharagpur', gen: { r: [450, 509],   m: 238 }, obc: { r: [209, null], m: 228 }, adv: '99.72–99.75',  main: '99.96–99.97' },
+    { n: 'IIT Roorkee',   gen: { r: [535, null],  m: 233 }, obc: { r: [244, null], m: 225 }, adv: '99.70',        main: '99.96' },
+    { n: 'IIT Guwahati',  gen: { r: [650, null],  m: 228 }, obc: { r: [350, null], m: 218 }, adv: '99.56–99.64',  main: '99.95' },
+  ];
+  const lo = 215, hi = 280;                     // marks range driving colour (white -> hot)
+  const mix = (a, b, u) => Math.round(a + (b - a) * u);
+  const rows = document.getElementById('rows');
+  const head = document.getElementById('head');
+
+  function colour(m) {
+    const u = Math.min(1, Math.max(0, (m - lo) / (hi - lo)));
+    return `rgb(255,${mix(255, 82, u)},${mix(255, 56, u)})`;
+  }
+
+  function render(cat) {
+    head.innerHTML = `
+      <div>Institute</div><div>2025</div><div>2026</div>
+      <div>${cat === 'gen' ? 'Main-scale %ile' : ''}</div>
+      <div>${cat === 'gen' ? 'Adv-pool %ile' : ''}</div>
+      <div>Marks</div>`;
+    // keep column order: rank25, rank26, main, adv, marks
+    rows.innerHTML = data.map(d => {
+      const c = d[cat], col = colour(c.m);
+      const pct = cat === 'gen'
+        ? `<div class="pct mono"><b>${d.main}</b></div><div class="pct mono">${d.adv}</div>`
+        : `<div></div><div></div>`;
+      return `
+      <div class="r" style="--c:${col}; --w:${(c.m / 360).toFixed(4)}">
+        <div class="inst">${d.n}</div>
+        <div class="num mono">${c.r[0]}</div>
+        <div class="num mono ${c.r[1] ? '' : 'faint'}">${c.r[1] ?? '–'}</div>
+        ${pct}
+        <div class="marks mono">${c.m}<small>+</small></div>
+        <div class="bar"><i></i></div>
+      </div>`;
+    }).join('');
+  }
+
+  const buttons = document.querySelectorAll('.toggle button');
+  buttons.forEach(b => b.addEventListener('click', () => {
+    buttons.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    render(b.dataset.cat);
+  }));
+  render('gen');
+</script>
+</body>
+</html>
